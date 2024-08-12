@@ -490,7 +490,8 @@ void xr_usb_serial_set_flow_mode(struct xr_usb_serial *xr_usb_serial,
 	// rs485,rs422 FD/HD mode
 	if (xr_usb_serial->rs485_422_en)
 	{
-		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_flow_addr, 0x00);
+		// Half-duplex mode, rx ignored during TX
+		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_flow_addr, 0x08);
 		xr_usb_serial_set_reg(xr_usb_serial, xr_usb_serial->reg_map.uart_gpio_mode_addr, 0x0B);
 	}
 	else
@@ -827,6 +828,3 @@ int xr_usb_serial_pre_setup(struct xr_usb_serial *xr_usb_serial)
 	return ret;
 
 }
-
-
-

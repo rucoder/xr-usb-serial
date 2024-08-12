@@ -1162,8 +1162,10 @@ static void xr_usb_serial_tty_set_termios(struct tty_struct *tty,
 
 	if (newctrl != xr_usb_serial->ctrlout)
 		xr_usb_serial_set_control(xr_usb_serial, xr_usb_serial->ctrlout = newctrl);
-
-	xr_usb_serial_set_flow_mode(xr_usb_serial,tty,cflag);/*set the serial flow mode*/
+	if((cflag & CRTSCTS) != (termios_old->c_cflag & CRTSCTS))
+	{
+		xr_usb_serial_set_flow_mode(xr_usb_serial,tty,cflag);/*set the serial flow mode*/
+	}
 	if (xr_usb_serial->trans9)
 	{
 		/* Turn on wide mode if we're 9-bit transparent. */
@@ -1605,7 +1607,7 @@ made_compressed_probe:
 
 	usb_set_intfdata(intf, xr_usb_serial);
 
-	xr_usb_serial->rs485_422_en = false;	//default enable rs232
+	xr_usb_serial->rs485_422_en = true;	//default enable rs232
 	i = device_create_file(&intf->dev, &dev_attr_bRS485_422_en);
 
 	if (i < 0)
